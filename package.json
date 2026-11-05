@@ -1,0 +1,21 @@
+{
+  "name": "nha-tho-online",
+  "version": "1.0.0",
+  "description": "Game giả lập Thánh Đường Online — Đi Nhà Thờ, Cầu Nguyện & Tạ Ơn Chúa (Amen)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": [
+    "church-online",
+    "simulator",
+    "cong-giao",
+    "thanh-duong-online",
+    "amen"
+  ],
+  "author": "Catholic Community",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}

@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Thánh Đường Online · Amen, Tạ Ơn Chúa</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" href="assets/fx_cross.png">
+</head>
+<body>
+  <div id="app-container">
+    <canvas id="game-canvas"></canvas>
+
+    <!-- Top bar -->
+    <header class="top-bar">
+      <div class="brand-badge">
+        <span class="icon">✝️</span>
+        <div>
+          <h1>Thánh Đường Online</h1>
+          <p id="streak-text">🔥 Ngày viếng: 1 · 🙏 Lời nguyện: 3</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <button class="icon-btn" id="btn-toggle-bg" title="Đổi bối cảnh">⛪</button>
+        <button class="icon-btn" id="btn-toggle-music" title="Bật/Tắt nhạc Thánh ca">🎵</button>
+        <button class="icon-btn" id="btn-toggle-sound" title="Bật/Tắt âm thanh">🔊</button>
+        <button class="icon-btn" id="btn-fullscreen" title="Toàn màn hình">⛶</button>
+      </div>
+    </header>
+
+    <!-- Ticker / Lời Chúa -->
+    <div class="notice-banner">
+      <span>🕊️</span>
+      <span id="banner-quote">"Bình an của Thầy ở cùng anh em." — Hãy chạm vào màn hình để bước đến hàng ghế cầu nguyện.</span>
+    </div>
+
+    <div class="guide-hint">Chạm vào màn hình để di chuyển</div>
+
+    <!-- Bottom Action Bar -->
+    <nav class="bottom-bar">
+      <button class="action-btn primary" id="btn-open-candle">
+        <span class="btn-icon">🕯️</span>
+        <span class="btn-label">Thắp nến</span>
+      </button>
+      <button class="action-btn" id="btn-offer-rose">
+        <span class="btn-icon">🌹</span>
+        <span class="btn-label">Dâng hoa</span>
+      </button>
+      <button class="action-btn" id="btn-cross">
+        <span class="btn-icon">✝️</span>
+        <span class="btn-label">Làm dấu</span>
+      </button>
+      <button class="action-btn" id="btn-open-rosary">
+        <span class="btn-icon">📿</span>
+        <span class="btn-label">Lần hạt</span>
+      </button>
+      <button class="action-btn" id="btn-open-petitions">
+        <span class="btn-icon">📜</span>
+        <span class="btn-label">Ý nguyện</span>
+      </button>
+      <button class="action-btn" id="btn-ring-bell">
+        <span class="btn-icon">🔔</span>
+        <span class="btn-label">Đổ chuông</span>
+      </button>
+      <button class="action-btn" id="btn-open-char">
+        <span class="btn-icon">👤</span>
+        <span class="btn-label">Nhân vật</span>
+      </button>
+    </nav>
+
+    <!-- Modal Thắp Nến -->
+    <div class="modal-overlay" id="modal-candle">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>🕯️ Thắp Nến Cầu Nguyện</h2>
+          <button class="close-btn" data-close="modal-candle">✕</button>
+        </div>
+        <div class="field">
+          <label>Ý nguyện dâng Chúa & Đức Mẹ</label>
+          <input type="text" class="text-input" id="candle-intention" maxlength="60" placeholder="Ví dụ: Cầu bình an cho cha mẹ...">
+        </div>
+        <div class="field">
+          <label>Chọn tâm tình</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px;">
+            <button class="amen-badge quick-candle" data-int="Cầu bình an gia đình">🏡 Bình An Gia Đình</button>
+            <button class="amen-badge quick-candle" data-int="Cầu sức khỏe chữa lành">❤️ Ơn Chữa Lành</button>
+            <button class="amen-badge quick-candle" data-int="Tạ ơn vì muôn hồng ân">✨ Tạ Ơn Hồng Ân</button>
+            <button class="amen-badge quick-candle" data-int="Xin ơn soi sáng học thi">📖 Ơn Khôn Ngoan</button>
+            <button class="amen-badge quick-candle" data-int="Cầu cho các linh hồn">🕊️ Các Đẳng Linh Hồn</button>
+          </div>
+        </div>
+        <button class="submit-btn" id="btn-submit-candle">
+          <span>🕯️ Thắp Nến Dâng Lời Nguyện</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal Lần Hạt Mân Côi -->
+    <div class="modal-overlay" id="modal-rosary">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>📿 Lần Hạt Mân Côi</h2>
+          <button class="close-btn" data-close="modal-rosary">✕</button>
+        </div>
+        <div class="rosary-view">
+          <div class="rosary-mystery">
+            <h3 id="rosary-mystery-title">Năm Sự Vui — Thứ Nhất</h3>
+            <p id="rosary-mystery-desc">Thiên Thần truyền tin cho Đức Bà chịu thai. Ta hãy xin cho được ở khiêm nhường.</p>
+          </div>
+          <div class="rosary-counter" id="rosary-count">1 / 10</div>
+          <div class="rosary-step-name" id="rosary-prayer-name">Kinh Kính Mừng</div>
+          <button class="rosary-bead-btn" id="btn-rosary-bead" title="Bấm để lần hạt">📿</button>
+          <p style="font-size:12px;color:var(--text-muted);">Bấm vào nút chuỗi hạt để lần từng kinh và suy niệm</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Sổ Ý Nguyện Cộng Đoàn -->
+    <div class="modal-overlay" id="modal-petitions">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>📜 Ý Nguyện Cộng Đoàn</h2>
+          <button class="close-btn" data-close="modal-petitions">✕</button>
+        </div>
+        <div class="field">
+          <label>Viết ý nguyện cầu hiệp thông</label>
+          <textarea class="text-area" id="petition-input" rows="2" maxlength="150" placeholder="Viết tâm tình cầu nguyện để cộng đoàn cùng hiệp thông Amen..."></textarea>
+          <button class="submit-btn" id="btn-submit-petition" style="margin-top:8px;padding:8px 14px;font-size:13px;">Gửi Ý Nguyện 🙏</button>
+        </div>
+        <div class="petition-list" id="petitions-container">
+          <!-- Danh sách ý nguyện -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Nhân Vật -->
+    <div class="modal-overlay" id="modal-character">
+      <div class="modal-card">
+        <div class="modal-head">
+          <h2>👤 Chọn Nhân Vật & Tên</h2>
+          <button class="close-btn" data-close="modal-character">✕</button>
+        </div>
+        <div class="field">
+          <label>Tên Thánh & Tên của bạn</label>
+          <input type="text" class="text-input" id="char-name-input" maxlength="24" placeholder="Ví dụ: Maria Lan">
+        </div>
+        <div class="field">
+          <label>Chọn trang phục / vai phục vụ</label>
+          <div class="character-grid" id="char-selection-grid">
+            <div class="character-card" data-skin="priest">
+              <img src="assets/c_priest.png" alt="Linh mục">
+              <span class="char-title">Linh Mục</span>
+            </div>
+            <div class="character-card" data-skin="altar_server">
+              <img src="assets/c_altar_server.png" alt="Lễ sinh">
+              <span class="char-title">Lễ Sinh</span>
+            </div>
+            <div class="character-card" data-skin="nun">
+              <img src="assets/c_nun.png" alt="Nữ tu">
+              <span class="char-title">Nữ Tu / Sơ</span>
+            </div>
+            <div class="character-card" data-skin="eucharist">
+              <img src="assets/c_eucharist.png" alt="Thiếu nhi">
+              <span class="char-title">Thiếu Nhi TT</span>
+            </div>
+            <div class="character-card" data-skin="woman">
+              <img src="assets/c_woman.png" alt="Giáo dân nữ">
+              <span class="char-title">Giáo Dân Nữ</span>
+            </div>
+            <div class="character-card" data-skin="man">
+              <img src="assets/c_man.png" alt="Giáo dân nam">
+              <span class="char-title">Giáo Dân Nam</span>
+            </div>
+            <div class="character-card" data-skin="granny">
+              <img src="assets/c_granny.png" alt="Bà cố">
+              <span class="char-title">Bà Cố / Lão Thành</span>
+            </div>
+          </div>
+        </div>
+        <button class="submit-btn" id="btn-save-char">Lưu Thay Đổi</button>
+      </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-box"></div>
+  </div>
+
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+  <script>
+    // Logic tương tác UI chính
+    (() => {
+      const $ = (id) => document.getElementById(id);
+      const $$ = (sel) => document.querySelectorAll(sel);
+
+      function showToast(text) {
+        const box = $('toast-box');
+        const t = document.createElement('div');
+        t.className = 'toast';
+        t.textContent = text;
+        box.appendChild(t);
+        setTimeout(() => t.remove(), 3200);
+      }
+
+      function openModal(id) {
+        $(id)?.classList.add('open');
+      }
+      function closeModal(id) {
+        $(id)?.classList.remove('open');
+      }
+      $$('[data-close]').forEach((btn) => {
+        btn.addEventListener('click', () => closeModal(btn.dataset.close));
+      });
+      $$('.modal-overlay').forEach((ov) => {
+        ov.addEventListener('click', (e) => {
+          if (e.target === ov) ov.classList.remove('open');
+        });
+      });
+
+      // Khởi tạo Canvas Game
+      window.addEventListener('DOMContentLoaded', () => {
+        const cv = $('game-canvas');
+        window.ChurchGame.init(cv);
+
+        // Streak & Thống kê
+        let streak = parseInt(localStorage.getItem('nto_streak') || '1', 10);
+        let prayers = parseInt(localStorage.getItem('nto_prayers') || '3', 10);
+        $('streak-text').textContent = `🔥 Ngày viếng: ${streak} · 🙏 Lời nguyện: ${prayers}`;
+
+        // Load tên vào modal nhân vật
+        const p = window.ChurchGame.getPlayer();
+        if (p) {
+          $('char-name-input').value = p.name;
+          $$('#char-selection-grid .character-card').forEach((c) => {
+            c.classList.toggle('selected', c.dataset.skin === p.skin);
+          });
+        }
+
+        renderPetitions();
+      });
+
+      // Hành động dưới thanh công cụ
+      $('btn-open-candle').addEventListener('click', () => openModal('modal-candle'));
+      $('btn-offer-rose').addEventListener('click', () => {
+        window.ChurchGame.offerRose('Tạ ơn Chúa vì muôn ơn lành');
+        showToast('🌹 Bạn đã dâng đóa hoa hồng tươi lên Bàn Thờ!');
+      });
+      $('btn-cross').addEventListener('click', () => {
+        window.ChurchGame.signOfCross();
+        showToast('✝️ Nhân danh Cha, và Con, và Thánh Thần. Amen!');
+      });
+      $('btn-open-rosary').addEventListener('click', () => openModal('modal-rosary'));
+      $('btn-open-petitions').addEventListener('click', () => openModal('modal-petitions'));
+      $('btn-ring-bell').addEventListener('click', () => {
+        window.ChurchGame.ringBell();
+        showToast('🔔 Chuông giáo đường ngân vang trầm bổng!');
+      });
+      $('btn-open-char').addEventListener('click', () => openModal('modal-character'));
+
+      // Nút trên cùng
+      $('btn-toggle-bg').addEventListener('click', () => {
+        const cur = window.ChurchGame.getBgStyle();
+        const next = cur === 'altar' ? 'tower' : 'altar';
+        window.ChurchGame.setBgStyle(next);
+        showToast(next === 'tower' ? '⛪ Đã chuyển sang: Đài Đức Mẹ & Tháp Chuông' : '⛪ Đã chuyển sang: Cung Thánh Nhà Thờ');
+      });
+
+      $('btn-toggle-sound').addEventListener('click', () => {
+        const muted = window.ChurchAudio.toggleMute();
+        $('btn-toggle-sound').textContent = muted ? '🔇' : '🔊';
+        showToast(muted ? '🔇 Đã tắt âm thanh' : '🔊 Đã bật âm thanh');
+      });
+
+      $('btn-toggle-music').addEventListener('click', () => {
+        const on = window.ChurchAudio.toggleMusic();
+        $('btn-toggle-music').textContent = on ? '🎵' : '🎶';
+        showToast(on ? '🎵 Đã bật nhạc Thánh ca' : '🎶 Đã tạm dừng nhạc Thánh ca');
+      });
+
+      $('btn-fullscreen').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+          document.exitFullscreen().catch(() => {});
+        }
+      });
+
+      // Submit Thắp nến
+      $('btn-submit-candle').addEventListener('click', () => {
+        const input = $('candle-intention');
+        const text = input.value.trim() || 'Cầu bình an';
+        window.ChurchGame.lightCandle(text);
+        closeModal('modal-candle');
+        showToast('🕯️ Đã thắp nến cầu nguyện: "' + text + '"');
+        input.value = '';
+
+        // Tăng bộ đếm
+        let prayers = parseInt(localStorage.getItem('nto_prayers') || '3', 10) + 1;
+        localStorage.setItem('nto_prayers', prayers);
+        let streak = parseInt(localStorage.getItem('nto_streak') || '1', 10);
+        $('streak-text').textContent = `🔥 Ngày viếng: ${streak} · 🙏 Lời nguyện: ${prayers}`;
+      });
+
+      $$('.quick-candle').forEach((b) => {
+        b.addEventListener('click', () => {
+          $('candle-intention').value = b.dataset.int;
+        });
+      });
+
+      // Lần hạt Mân Côi (Rosary)
+      let beadCount = 1;
+      $('btn-rosary-bead').addEventListener('click', () => {
+        window.ChurchAudio.beadClick();
+        beadCount++;
+        if (beadCount > 10) {
+          beadCount = 1;
+          window.ChurchAudio.amenChime();
+          showToast('✨ Hoàn thành một chục hạt Kinh Mân Côi! Tạ ơn Chúa!');
+        }
+        $('rosary-count').textContent = `${beadCount} / 10`;
+      });
+
+      // Nhân vật
+      $$('#char-selection-grid .character-card').forEach((c) => {
+        c.addEventListener('click', () => {
+          $$('#char-selection-grid .character-card').forEach((x) => x.classList.remove('selected'));
+          c.classList.add('selected');
+        });
+      });
+
+      $('btn-save-char').addEventListener('click', () => {
+        const name = $('char-name-input').value.trim() || 'Maria An';
+        const selected = document.querySelector('#char-selection-grid .character-card.selected');
+        const skin = selected ? selected.dataset.skin : 'woman';
+        window.ChurchGame.setPlayerName(name);
+        window.ChurchGame.setPlayerSkin(skin);
+        closeModal('modal-character');
+        showToast(`👤 Đã lưu nhân vật: ${name}`);
+      });
+
+      // Ý nguyện cộng đoàn
+      const defaultPetitions = [
+        { id: 1, name: 'Têrêsa Mai', text: 'Xin Chúa ban ơn bình an và gìn giữ gia đình con.', amens: 18 },
+        { id: 2, name: 'Giuse Tuấn', text: 'Cầu cho mẹ con mau chóng hồi phục sức khỏe.', amens: 25 },
+        { id: 3, name: 'Phaolô Đức', text: 'Tạ ơn Chúa vì kỳ thi tốt nghiệp vừa qua đã đạt kết quả tốt đẹp.', amens: 32 }
+      ];
+
+      function getPetitions() {
+        try {
+          const s = localStorage.getItem('nto_petitions');
+          return s ? JSON.parse(s) : defaultPetitions;
+        } catch { return defaultPetitions; }
+      }
+
+      function renderPetitions() {
+        const list = getPetitions();
+        const container = $('petitions-container');
+        container.innerHTML = '';
+        list.forEach((p) => {
+          const div = document.createElement('div');
+          div.className = 'petition-item';
+          div.innerHTML = `
+            <div class="p-content">
+              <div class="p-name">✝️ ${p.name}</div>
+              <div class="p-text">${p.text}</div>
+            </div>
+            <button class="amen-badge" data-amen-id="${p.id}">Amen 🙏 (${p.amens})</button>
+          `;
+          div.querySelector('[data-amen-id]').addEventListener('click', function() {
+            p.amens++;
+            this.textContent = `Amen 🙏 (${p.amens})`;
+            localStorage.setItem('nto_petitions', JSON.stringify(list));
+            window.ChurchAudio.amenChime();
+            showToast('🙏 Bạn đã hiệp thông Amen cùng ' + p.name);
+          });
+          container.appendChild(div);
+        });
+      }
+
+      $('btn-submit-petition').addEventListener('click', () => {
+        const val = $('petition-input').value.trim();
+        if (!val) return;
+        const list = getPetitions();
+        const p = window.ChurchGame.getPlayer();
+        list.unshift({
+          id: Date.now(),
+          name: p ? p.name : 'Người Kitô hữu',
+          text: val,
+          amens: 1
+        });
+        localStorage.setItem('nto_petitions', JSON.stringify(list));
+        $('petition-input').value = '';
+        renderPetitions();
+        window.ChurchAudio.amenChime();
+        showToast('📜 Ý nguyện của bạn đã được đăng lên sổ cộng đoàn!');
+      });
+    })();
+  </script>
+</body>
+</html>
