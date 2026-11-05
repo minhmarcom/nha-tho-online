@@ -15,7 +15,7 @@
   ],
   "author": "Catholic Community",
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "express": "^4.21.2"
   }
 }

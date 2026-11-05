@@ -10,6 +10,10 @@ app.use(express.static(path.join(__dirname), {
   maxAge: '1d'
 }));
 
+app.get('/', (_req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.get('/health', (_req, res) => {
   res.json({ status: 'ok', name: 'Thánh Đường Online', port: PORT });
 });
